@@ -17,6 +17,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.scene.rememberSceneSetupNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.example.playground.design_systems.DesignSystemScreen
 import com.example.playground.login.banque_misr.BanqueMisr
 import com.example.playground.login.banque_misr.BanqueMisrTheme
 import kotlinx.serialization.Serializable
@@ -28,6 +29,9 @@ sealed class Destination() : NavKey {
 
     @Serializable
     object BanqueMisr : Destination()
+
+    @Serializable
+    object DesignSystem : Destination()
 }
 
 @Composable
@@ -43,17 +47,23 @@ fun App() {
         backStack = backStack,
         entryProvider = entryProvider {
             entry<Destination.Home> {
-                Home(
-                    onNavigateToBanqueMisr = {
-                        backStack.add(
-                            Destination.BanqueMisr
-                        )
-                    })
+                Home(onNavigateToBanqueMisr = {
+                    backStack.add(
+                        Destination.BanqueMisr
+                    )
+                }, onNavigateToDesignSystem = {
+                    backStack.add(
+                        Destination.DesignSystem
+                    )
+                })
             }
             entry<Destination.BanqueMisr> {
                 BanqueMisrTheme {
                     BanqueMisr()
                 }
+            }
+            entry<Destination.DesignSystem> {
+                DesignSystemScreen()
             }
         },
     )
@@ -61,16 +71,21 @@ fun App() {
 
 @Composable
 fun Home(
-    onNavigateToBanqueMisr: () -> Unit = {},
+    onNavigateToBanqueMisr: () -> Unit, onNavigateToDesignSystem: () -> Unit
 ) {
     Scaffold {
         Column(
-            modifier = Modifier.padding(it).fillMaxSize(),
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onNavigateToBanqueMisr) {
                 Text(text = "Go to Banque Misr")
+            }
+            Button(onClick = onNavigateToDesignSystem) {
+                Text(text = "Go to IOS Design System")
             }
         }
     }
